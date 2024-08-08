@@ -25,8 +25,9 @@ function execCommand(cmd: string): Promise<string> {
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
         reject(error);
-      } else if (stderr) {
-        reject(new Error(stderr));
+      // log in stderr
+      // } else if (stderr) {
+      //   reject(new Error(stderr));
       } else {
         resolve(stdout);
       }
@@ -41,7 +42,7 @@ function execCommand(cmd: string): Promise<string> {
  */
 export async function detectGPU(): Promise<GpuInfo[]> {
   try {
-    const output = await execCommand("ollama-gpu/ollama-gpu");
+    const output = await execCommand("ollama-gpu\\ollama-gpu.exe");
     const gpuInfos: GpuInfo[] = JSON.parse(output);
     return gpuInfos;
   } catch (error) {
