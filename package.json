@@ -7,7 +7,7 @@
   "scripts": {
     "build": "run-script-os",
     "build:default": "rm -rf dist && tsc && cp -r src/bin dist",
-    "build:win32": "Remove-Item dist -Recurse -Force -ErrorAction SilentlyContinue && tsc && Copy-Item src/bin -Destination dist -Recurse -Force",
+    "build:win32": "RMDIR /S /Q dist && tsc && XCOPY /S /I src\\bin dist\\bin",
     "test": "jest"
   },
   "keywords": [],
