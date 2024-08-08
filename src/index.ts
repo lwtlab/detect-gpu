@@ -39,7 +39,6 @@ function execCommand(cmd: string): Promise<string> {
 
 /**
  * 通过执行系统命令检测GPU信息。
- * 此函数假设输出格式可以被分割成数组。
  * @returns Promise解析为GPU信息数组。
  */
 export async function detectGPU(): Promise<GpuInfo[]> {
@@ -47,7 +46,7 @@ export async function detectGPU(): Promise<GpuInfo[]> {
   if (platform === "win32") {
     filename = "ollama-gpu.exe";
   }
-  const command = path.join("bin",`${platform}-${arch}`, filename);
+  const command = path.join(__dirname, "bin", `${platform}-${arch}`, filename);
   try {
     const output = await execCommand(command);
     const gpuInfos: GpuInfo[] = JSON.parse(output);
