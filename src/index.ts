@@ -18,9 +18,9 @@ export interface GpuInfo {
 }
 
 /**
- * 执行shell命令并返回一个Promise。
- * @param cmd - 要运行的命令。
- * @returns Promise解析为命令输出。
+ * Execute a shell command and return a Promise.
+ * @param cmd - The command to run.
+ * @returns Promise that resolves to the command output.
  */
 function execCommand(cmd: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -38,8 +38,8 @@ function execCommand(cmd: string): Promise<string> {
 }
 
 /**
- * 通过执行系统命令检测GPU信息。
- * @returns Promise解析为GPU信息数组。
+ * Detect GPU information by executing system commands.
+ * @returns Promise that resolves to an array of GPU information.
  */
 export async function detectGPU(): Promise<GpuInfo[]> {
   let filename = "ollama-gpu";
@@ -53,12 +53,12 @@ export async function detectGPU(): Promise<GpuInfo[]> {
     filename
   );
 
-  // 检查文件是否存在
+  // Check if the file exists
   const fs = await import("fs").then((module) => module.promises);
   try {
     await fs.access(commandPath, fs.constants.F_OK);
   } catch (error) {
-    throw new Error(`GPU检测工具不存在: ${commandPath}`);
+    throw new Error(`GPU detection tool does not exist: ${commandPath}`);
   }
 
   try {
@@ -67,8 +67,8 @@ export async function detectGPU(): Promise<GpuInfo[]> {
     return gpuInfos;
   } catch (error) {
     if (error instanceof SyntaxError) {
-      throw new Error("GPU信息解析失败: 无效的JSON格式");
+      throw new Error("Failed to parse GPU information: Invalid JSON format");
     }
-    throw new Error(`GPU检测失败: ${(error as Error).message}`);
+    throw new Error(`GPU detection failed: ${(error as Error).message}`);
   }
 }
