@@ -46,12 +46,29 @@ export async function detectGPU(): Promise<GpuInfo[]> {
   if (platform === "win32") {
     filename = "ollama-gpu.exe";
   }
-  const command = path.join(__dirname, "bin", `${platform}-${arch}`, filename);
+  const commandPath = path.join(
+    __dirname,
+    "bin",
+    `${platform}-${arch}`,
+    filename
+  );
+
+  // 检查文件是否存在
+  const fs = await import("fs").then((module) => module.promises);
   try {
-    const output = await execCommand(command);
+    await fs.access(commandPath, fs.constants.F_OK);
+  } catch (error) {
+    throw new Error(`GPU检测工具不存在: ${commandPath}`);
+  }
+
+  try {
+    const output = await execCommand(commandPath);
     const gpuInfos: GpuInfo[] = JSON.parse(output);
     return gpuInfos;
   } catch (error) {
-    throw error;
+    if (error instanceof SyntaxError) {
+      throw new Error("GPU信息解析失败: 无效的JSON格式");
+    }
+    throw new Error(`GPU检测失败: ${(error as Error).message}`);
   }
 }
