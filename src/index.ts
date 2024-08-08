@@ -1,5 +1,6 @@
 import { exec } from "child_process";
 import path from "path";
+const electronUtil = require("electron-util/node");
 
 const { platform, arch } = process;
 // https://github.com/ollama/ollama/blob/c4cf8ad55966cc61c73f119ab9cbfaf57264fc81/gpu/types.go#L17
@@ -47,7 +48,10 @@ export async function detectGPU(): Promise<GpuInfo[]> {
     filename = "ollama-gpu.exe";
   }
   const commandPath = path.join(
-    __dirname,
+    // please use commonjs require(), not esm import, otherwise, executable filepath will not be located correctly
+    // electron ASAR compatible
+    // reference: https://github.com/sallar/node-mac-app-icon/commit/4468db78103935c6b67deb56ab9fa93801ab78e2
+    electronUtil.fixPathForAsarUnpack(__dirname),
     "bin",
     `${platform}-${arch}`,
     filename
