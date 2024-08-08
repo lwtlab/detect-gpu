@@ -1,5 +1,7 @@
 import { exec } from "child_process";
+import path from "path";
 
+const { platform, arch } = process;
 // https://github.com/ollama/ollama/blob/c4cf8ad55966cc61c73f119ab9cbfaf57264fc81/gpu/types.go#L17
 export interface GpuInfo {
   total_memory?: number;
@@ -25,9 +27,9 @@ function execCommand(cmd: string): Promise<string> {
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
         reject(error);
-      // log in stderr
-      // } else if (stderr) {
-      //   reject(new Error(stderr));
+        // log in stderr
+        // } else if (stderr) {
+        //   reject(new Error(stderr));
       } else {
         resolve(stdout);
       }
@@ -41,8 +43,13 @@ function execCommand(cmd: string): Promise<string> {
  * @returns Promise解析为GPU信息数组。
  */
 export async function detectGPU(): Promise<GpuInfo[]> {
+  let filename = "ollama-gpu";
+  if (platform === "win32") {
+    filename = "ollama-gpu.exe";
+  }
+  const command = path.join("bin",`${platform}-${arch}`, filename);
   try {
-    const output = await execCommand("ollama-gpu\\ollama-gpu.exe");
+    const output = await execCommand(command);
     const gpuInfos: GpuInfo[] = JSON.parse(output);
     return gpuInfos;
   } catch (error) {
