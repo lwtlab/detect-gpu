@@ -10,7 +10,7 @@
     "build:win32": "cmd /c \"IF EXIST dist (RMDIR /S /Q dist)\" && tsc && XCOPY /S /I src\\bin dist\\bin",
     "test": "jest",
     "package": "npm pack",
-    "publish": "npm publish"
+    "publish": "npm publish --access public"
   },
   "keywords": [],
   "author": "lwtlab",
