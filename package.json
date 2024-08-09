@@ -8,7 +8,9 @@
     "build": "run-script-os",
     "build:default": "rm -rf dist && tsc && cp -r src/bin dist",
     "build:win32": "cmd /c \"IF EXIST dist (RMDIR /S /Q dist)\" && tsc && XCOPY /S /I src\\bin dist\\bin",
-    "test": "jest"
+    "test": "jest",
+    "package": "npm pack",
+    "publish": "npm publish"
   },
   "keywords": [],
   "author": "",
