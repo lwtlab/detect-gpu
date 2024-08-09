@@ -1,7 +1,7 @@
 {
   "name": "@lwtlab/detect-gpu",
   "version": "0.1.0",
-  "description": "",
+  "description": "detect GPU on Windows/macOS",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -13,8 +13,8 @@
     "publish": "npm publish"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "lwtlab",
+  "license": "MIT",
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node"
