@@ -24,8 +24,9 @@ export interface GpuInfo {
  * @returns Promise that resolves to the command output.
  */
 function execCommand(cmd: string): Promise<string> {
+  const quoteCmd = `"${cmd}"`;
   return new Promise((resolve, reject) => {
-    exec(cmd, (error, stdout, stderr) => {
+    exec(quoteCmd, (error, stdout, stderr) => {
       if (error) {
         reject(error);
         // log in stderr
