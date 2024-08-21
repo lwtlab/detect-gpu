@@ -2,8 +2,8 @@
 # yarn lockfile v1
 
 
-"@littlegun/detect-gpu@..":
-  version "0.1.1"
+"@lwtlab/detect-gpu@..":
+  version "0.2.0"
   dependencies:
     electron-util "0.17.2"
 
