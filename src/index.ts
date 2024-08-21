@@ -18,12 +18,17 @@ export interface GpuInfo {
   driver_minor?: number;
 }
 
+export interface GpuResult {
+  stderr: string;
+  gpuInfos: GpuInfo[];
+}
+
 /**
  * Execute a shell command and return a Promise.
  * @param cmd - The command to run.
  * @returns Promise that resolves to the command output.
  */
-function execCommand(cmd: string): Promise<string> {
+function execCommand(cmd: string): Promise<[string, string]> {
   const quoteCmd = `"${cmd}"`;
   return new Promise((resolve, reject) => {
     exec(quoteCmd, (error, stdout, stderr) => {
@@ -33,7 +38,7 @@ function execCommand(cmd: string): Promise<string> {
         // } else if (stderr) {
         //   reject(new Error(stderr));
       } else {
-        resolve(stdout);
+        resolve([stdout, stderr]);
       }
     });
   });
@@ -43,7 +48,7 @@ function execCommand(cmd: string): Promise<string> {
  * Detect GPU information by executing system commands.
  * @returns Promise that resolves to an array of GPU information.
  */
-export async function detectGPU(): Promise<GpuInfo[]> {
+export async function detectGPU(): Promise<GpuResult> {
   let filename = "ollama-gpu";
   if (platform === "win32") {
     filename = "ollama-gpu.exe";
@@ -67,9 +72,12 @@ export async function detectGPU(): Promise<GpuInfo[]> {
   }
 
   try {
-    const output = await execCommand(commandPath);
-    const gpuInfos: GpuInfo[] = JSON.parse(output);
-    return gpuInfos;
+    const [stdout, stderr] = await execCommand(commandPath);
+    const gpuInfos: GpuInfo[] = JSON.parse(stdout);
+    return {
+      stderr,
+      gpuInfos,
+    };
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw new Error("Failed to parse GPU information: Invalid JSON format");
