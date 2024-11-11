@@ -1,5 +1,6 @@
 import { exec } from "child_process";
 import path from "path";
+const electronUtil = require("electron-util/node");
 
 const { platform, arch } = process;
 // https://github.com/ollama/ollama/blob/c4cf8ad55966cc61c73f119ab9cbfaf57264fc81/gpu/types.go#L17
@@ -17,21 +18,27 @@ export interface GpuInfo {
   driver_minor?: number;
 }
 
+export interface GpuResult {
+  stderr: string;
+  gpuInfos: GpuInfo[];
+}
+
 /**
  * Execute a shell command and return a Promise.
  * @param cmd - The command to run.
  * @returns Promise that resolves to the command output.
  */
-function execCommand(cmd: string): Promise<string> {
+function execCommand(cmd: string): Promise<[string, string]> {
+  const quoteCmd = `"${cmd}"`;
   return new Promise((resolve, reject) => {
-    exec(cmd, (error, stdout, stderr) => {
+    exec(quoteCmd, (error, stdout, stderr) => {
       if (error) {
         reject(error);
         // log in stderr
         // } else if (stderr) {
         //   reject(new Error(stderr));
       } else {
-        resolve(stdout);
+        resolve([stdout, stderr]);
       }
     });
   });
@@ -41,13 +48,16 @@ function execCommand(cmd: string): Promise<string> {
  * Detect GPU information by executing system commands.
  * @returns Promise that resolves to an array of GPU information.
  */
-export async function detectGPU(): Promise<GpuInfo[]> {
+export async function detectGPU(): Promise<GpuResult> {
   let filename = "ollama-gpu";
   if (platform === "win32") {
     filename = "ollama-gpu.exe";
   }
   const commandPath = path.join(
-    __dirname,
+    // please use commonjs require(), not esm import, otherwise, executable filepath will not be located correctly
+    // electron ASAR compatible
+    // reference: https://github.com/sallar/node-mac-app-icon/commit/4468db78103935c6b67deb56ab9fa93801ab78e2
+    electronUtil.fixPathForAsarUnpack(__dirname),
     "bin",
     `${platform}-${arch}`,
     filename
@@ -62,9 +72,12 @@ export async function detectGPU(): Promise<GpuInfo[]> {
   }
 
   try {
-    const output = await execCommand(commandPath);
-    const gpuInfos: GpuInfo[] = JSON.parse(output);
-    return gpuInfos;
+    const [stdout, stderr] = await execCommand(commandPath);
+    const gpuInfos: GpuInfo[] = JSON.parse(stdout);
+    return {
+      stderr,
+      gpuInfos,
+    };
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw new Error("Failed to parse GPU information: Invalid JSON format");
