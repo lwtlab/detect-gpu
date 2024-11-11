@@ -1,0 +1,26 @@
+[
+  {
+    "total_memory": 11810897920,
+    "free_memory": 10697572352,
+    "library": "cuda",
+    "variant": 0,
+    "UnreliableFreeMemory": false,
+    "gpu_id": "GPU-3fd9a0d2-f3f7-1224-f7ff-bff276c06bf7",
+    "name": "NVIDIA GeForce GTX 1080 Ti",
+    "compute": "6.1",
+    "driver_major": 12,
+    "driver_minor": 6
+  },
+  {
+    "total_memory": 11811028992,
+    "free_memory": 10698620928,
+    "library": "cuda",
+    "variant": 0,
+    "UnreliableFreeMemory": false,
+    "gpu_id": "GPU-7a364eec-3bc8-6637-549e-c117349a31e7",
+    "name": "NVIDIA GeForce GTX 1080 Ti",
+    "compute": "6.1",
+    "driver_major": 12,
+    "driver_minor": 6
+  }
+]

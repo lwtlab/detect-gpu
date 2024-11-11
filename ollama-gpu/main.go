@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ollama/ollama/gpu"
+	gpu "github.com/ollama/ollama/discover"
 )
 
 func main() {
